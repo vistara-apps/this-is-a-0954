@@ -1,0 +1,149 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+// User model
+model User {
+  id        String   @id @default(cuid())
+  username  String   @unique
+  email     String   @unique
+  password  String
+  avatarUrl String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Subscription information
+  subscriptionTier SubscriptionTier @default(FREE)
+  subscriptionEnd  DateTime?
+
+  // Relationships
+  comments  Comment[]
+  ratings   Rating[]
+  watchlist Watchlist[]
+}
+
+// Anime model
+model Anime {
+  id          String   @id @default(cuid())
+  title       String
+  description String?
+  coverImage  String?
+  startDate   DateTime?
+  endDate     DateTime?
+  status      String?
+  genres      String? // Stored as JSON string
+
+  // External IDs for API integration
+  anilistId   Int?     @unique
+  malId       Int?     @unique
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relationships
+  episodes    Episode[]
+  watchlists  Watchlist[]
+}
+
+// Episode model
+model Episode {
+  id           String   @id @default(cuid())
+  animeId      String
+  episodeNumber Int
+  title        String?
+  airedAt      DateTime?
+  thumbnail    String?
+  
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  // Relationships
+  anime        Anime    @relation(fields: [animeId], references: [id], onDelete: Cascade)
+  comments     Comment[]
+  ratings      Rating[]
+
+  @@unique([animeId, episodeNumber])
+}
+
+// Comment model
+model Comment {
+  id        String   @id @default(cuid())
+  episodeId String
+  userId    String
+  content   String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relationships
+  episode   Episode  @relation(fields: [episodeId], references: [id], onDelete: Cascade)
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+// Rating model
+model Rating {
+  id        String   @id @default(cuid())
+  episodeId String
+  userId    String
+  score     Int      // 1-10 rating
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relationships
+  episode   Episode  @relation(fields: [episodeId], references: [id], onDelete: Cascade)
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([episodeId, userId])
+}
+
+// Watchlist model
+model Watchlist {
+  id        String   @id @default(cuid())
+  userId    String
+  animeId   String
+  status    WatchStatus @default(PLANNING)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relationships
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  anime     Anime    @relation(fields: [animeId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, animeId])
+}
+
+// Template model for the boilerplate templates
+model Template {
+  id          String   @id @default(cuid())
+  name        String
+  description String?
+  imageUrl    String?
+  downloads   Int      @default(0)
+  rating      Float?   // Average rating
+  isPremium   Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+// Enums
+enum SubscriptionTier {
+  FREE
+  PRO
+  ENTERPRISE
+}
+
+enum WatchStatus {
+  PLANNING
+  WATCHING
+  COMPLETED
+  DROPPED
+  PAUSED
+}
+
