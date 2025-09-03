@@ -1,10 +1,10 @@
 /** @type {import('@remix-run/dev').AppConfig} */
 export default {
   ignoredRouteFiles: ["**/.*"],
-  // appDirectory: "app",
-  // assetsBuildDirectory: "public/build",
-  // serverBuildPath: "build/index.js",
-  // publicPath: "/build/",
+  appDirectory: "app",
+  assetsBuildDirectory: "public/build",
+  serverBuildPath: "build/index.js",
+  publicPath: "/build/",
   serverModuleFormat: "esm", // Using ESM format to match package.json type
   future: {
     v2_errorBoundary: true,
@@ -14,4 +14,3 @@ export default {
   },
   tailwind: true,
 };
-
