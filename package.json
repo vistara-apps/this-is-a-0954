@@ -1,26 +1,43 @@
 {
   "name": "animeforge",
+  "version": "1.0.0",
+  "description": "Launch your dream anime website in minutes with Remix",
   "private": true,
-  "version": "0.0.0",
-  "type": "module",
+  "sideEffects": false,
   "scripts": {
-    "dev": "vite",
-    "build": "vite build",
-    "preview": "vite preview"
+    "build": "remix build",
+    "dev": "remix dev --manual",
+    "start": "remix-serve ./build/index.js",
+    "typecheck": "tsc",
+    "postinstall": "prisma generate"
   },
   "dependencies": {
+    "@prisma/client": "^5.7.0",
+    "@remix-run/css-bundle": "^2.3.1",
+    "@remix-run/node": "^2.3.1",
+    "@remix-run/react": "^2.3.1",
+    "@remix-run/serve": "^2.3.1",
+    "bcryptjs": "^2.4.3",
+    "graphql": "^16.8.1",
+    "graphql-request": "^6.1.0",
+    "isbot": "^3.6.8",
+    "lucide-react": "^0.294.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "lucide-react": "^0.263.1",
-    "@headlessui/react": "^1.7.17"
+    "remix-auth": "^3.6.0",
+    "remix-auth-form": "^1.4.0"
   },
   "devDependencies": {
-    "@types/react": "^18.0.28",
-    "@types/react-dom": "^18.0.11",
-    "@vitejs/plugin-react": "^4.2.1",
-    "autoprefixer": "^10.4.0",
-    "postcss": "^8.4.0",
-    "tailwindcss": "^3.4.11",
-    "vite": "^5.4.1"
+    "@remix-run/dev": "^2.3.1",
+    "@types/bcryptjs": "^2.4.6",
+    "@types/react": "^18.2.20",
+    "@types/react-dom": "^18.2.7",
+    "autoprefixer": "^10.4.21",
+    "prisma": "^5.7.0",
+    "tailwindcss": "^3.3.6",
+    "typescript": "^5.1.6"
+  },
+  "engines": {
+    "node": ">=18.0.0"
   }
 }
