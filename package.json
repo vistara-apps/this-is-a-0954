@@ -4,7 +4,6 @@
   "description": "Launch your dream anime website in minutes with Remix",
   "private": true,
   "sideEffects": false,
-  "type": "module",
   "scripts": {
     "build": "remix build",
     "dev": "remix dev --manual",
@@ -41,4 +40,3 @@
     "node": ">=18.0.0"
   }
 }
-
