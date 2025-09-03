@@ -10,7 +10,7 @@ import {
 } from "@remix-run/react";
 import { json } from "@remix-run/node";
 import { authenticator } from "~/utils/auth.server";
-import styles from "./styles/tailwind.css";
+import styles from "~/styles/tailwind.css";
 
 export const links = () => [
   { rel: "stylesheet", href: styles },
