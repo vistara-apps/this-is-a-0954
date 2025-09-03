@@ -1,133 +1,108 @@
 import { Link } from "@remix-run/react";
-import { 
-  TrendingUp, 
-  Download, 
-  Star, 
-  Users, 
-  Clock,
-  Plus,
-  ExternalLink,
-  Activity
-} from "lucide-react";
-import StatsCard from "./StatsCard";
-import ProjectCard from "./ProjectCard";
+import { ArrowRight, Star, Users, Code } from "lucide-react";
 
-const iconMap = {
-  "Activity": Activity,
-  "TrendingUp": TrendingUp,
-  "Download": Download,
-  "Star": Star
-};
-
-const Dashboard = ({ stats, projects }) => {
+export default function Dashboard() {
   return (
-    <div className="p-6 space-y-6">
-      {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-        <div>
-          <h1 className="text-2xl font-semibold">Welcome back!</h1>
-          <p className="text-muted">Here's what's happening with your anime projects.</p>
-        </div>
-        <Link 
-          to="/projects/new"
-          className="inline-flex items-center gap-2 px-4 py-2 bg-primary text-white rounded-md hover:bg-primary/90 transition-colors"
-        >
-          <Plus className="w-4 h-4" />
-          New Project
-        </Link>
+    <div className="p-6">
+      <h1 className="text-3xl font-bold mb-6">Welcome to AnimeForge</h1>
+      
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+        <StatCard 
+          title="Projects" 
+          value="3" 
+          description="Active projects" 
+          icon={<Code className="text-blue-500" />} 
+        />
+        <StatCard 
+          title="Templates" 
+          value="24" 
+          description="Available templates" 
+          icon={<Star className="text-yellow-500" />} 
+        />
+        <StatCard 
+          title="Community" 
+          value="1.2k" 
+          description="Active users" 
+          icon={<Users className="text-green-500" />} 
+        />
       </div>
-
-      {/* Stats Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        {stats.map((stat, index) => {
-          const IconComponent = iconMap[stat.icon] || Activity;
-          return (
-            <StatsCard 
-              key={index} 
-              title={stat.title} 
-              value={stat.value} 
-              icon={IconComponent} 
-              change={stat.change} 
-            />
-          );
-        })}
-      </div>
-
-      {/* Recent Projects */}
-      <div className="space-y-4">
-        <div className="flex items-center justify-between">
-          <h2 className="text-lg font-semibold">Recent Projects</h2>
-          <Link 
-            to="/projects"
-            className="text-primary hover:text-primary/80 text-sm font-medium"
-          >
-            View all
+      
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="card">
+          <h2 className="text-xl font-bold mb-4">Recent Projects</h2>
+          <div className="space-y-3">
+            <ProjectItem name="My Anime Blog" lastEdited="2 days ago" />
+            <ProjectItem name="Anime Watchlist App" lastEdited="1 week ago" />
+            <ProjectItem name="Manga Reader" lastEdited="3 weeks ago" />
+          </div>
+          <Link to="/templates" className="flex items-center text-blue-600 mt-4 hover:underline">
+            Create new project <ArrowRight size={16} className="ml-1" />
           </Link>
         </div>
-        <div className="grid gap-4">
-          {projects.map((project) => (
-            <ProjectCard key={project.id} project={project} />
-          ))}
-        </div>
-      </div>
-
-      {/* Quick Actions */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div className="glass-effect rounded-lg p-6">
-          <h3 className="text-lg font-semibold mb-4">Quick Start</h3>
+        
+        <div className="card">
+          <h2 className="text-xl font-bold mb-4">Featured Templates</h2>
           <div className="space-y-3">
-            <Link 
-              to="/boilerplate/download"
-              className="w-full flex items-center gap-3 p-3 bg-bg hover:bg-border rounded-md transition-colors text-left"
-            >
-              <div className="w-8 h-8 bg-primary rounded-md flex items-center justify-center">
-                <Download className="w-4 h-4 text-white" />
-              </div>
-              <div>
-                <p className="font-medium">Download Boilerplate</p>
-                <p className="text-xs text-muted">Get the latest Remix template</p>
-              </div>
-            </Link>
-            <Link 
-              to="/guides/deployment"
-              className="w-full flex items-center gap-3 p-3 bg-bg hover:bg-border rounded-md transition-colors text-left"
-            >
-              <div className="w-8 h-8 bg-accent rounded-md flex items-center justify-center">
-                <ExternalLink className="w-4 h-4 text-white" />
-              </div>
-              <div>
-                <p className="font-medium">Deployment Guide</p>
-                <p className="text-xs text-muted">Step-by-step instructions</p>
-              </div>
-            </Link>
+            <TemplateItem name="Anime Blog" category="Content" isPremium={false} />
+            <TemplateItem name="Anime Tracker Pro" category="Application" isPremium={true} />
+            <TemplateItem name="Manga Collection" category="Portfolio" isPremium={false} />
           </div>
-        </div>
-
-        <div className="glass-effect rounded-lg p-6">
-          <h3 className="text-lg font-semibold mb-4">Community</h3>
-          <div className="space-y-3">
-            <div className="flex items-center gap-3">
-              <Users className="w-4 h-4 text-muted" />
-              <span className="text-sm">2.4k active developers</span>
-            </div>
-            <div className="flex items-center gap-3">
-              <Clock className="w-4 h-4 text-muted" />
-              <span className="text-sm">Last updated 2 hours ago</span>
-            </div>
-            <a 
-              href="https://discord.gg/animeforge" 
-              target="_blank" 
-              rel="noopener noreferrer"
-              className="text-primary hover:text-primary/80 text-sm font-medium"
-            >
-              Join Discord →
-            </a>
-          </div>
+          <Link to="/templates" className="flex items-center text-blue-600 mt-4 hover:underline">
+            View all templates <ArrowRight size={16} className="ml-1" />
+          </Link>
         </div>
       </div>
     </div>
   );
-};
+}
 
-export default Dashboard;
+function StatCard({ title, value, description, icon }) {
+  return (
+    <div className="card flex items-center">
+      <div className="p-3 rounded-full bg-gray-100 mr-4">
+        {icon}
+      </div>
+      <div>
+        <h3 className="text-lg font-semibold">{title}</h3>
+        <p className="text-2xl font-bold">{value}</p>
+        <p className="text-gray-500 text-sm">{description}</p>
+      </div>
+    </div>
+  );
+}
+
+function ProjectItem({ name, lastEdited }) {
+  return (
+    <div className="flex items-center justify-between p-3 border border-gray-200 rounded-md">
+      <div>
+        <h4 className="font-medium">{name}</h4>
+        <p className="text-gray-500 text-sm">Last edited: {lastEdited}</p>
+      </div>
+      <Link to="/editor" className="text-blue-600 hover:text-blue-800">
+        <ArrowRight size={18} />
+      </Link>
+    </div>
+  );
+}
+
+function TemplateItem({ name, category, isPremium }) {
+  return (
+    <div className="flex items-center justify-between p-3 border border-gray-200 rounded-md">
+      <div>
+        <h4 className="font-medium">{name}</h4>
+        <p className="text-gray-500 text-sm">{category}</p>
+      </div>
+      <div className="flex items-center">
+        {isPremium && (
+          <span className="text-xs bg-yellow-100 text-yellow-800 px-2 py-1 rounded-full mr-2">
+            Premium
+          </span>
+        )}
+        <Link to="/templates" className="text-blue-600 hover:text-blue-800">
+          <ArrowRight size={18} />
+        </Link>
+      </div>
+    </div>
+  );
+}
 

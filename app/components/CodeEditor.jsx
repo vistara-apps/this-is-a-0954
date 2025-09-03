@@ -1,161 +1,116 @@
 import { useState } from "react";
-import { 
-  File, 
-  FolderTree, 
-  Save, 
-  Play, 
-  Download, 
-  Share2, 
-  Settings as SettingsIcon,
-  ChevronRight,
-  ChevronDown
-} from "lucide-react";
+import { Save, Play, Download } from "lucide-react";
 
-const CodeEditor = ({ files }) => {
-  const [activeFileId, setActiveFileId] = useState(files[0]?.id);
-  const [expandedFolders, setExpandedFolders] = useState({
-    "app": true,
-    "app/routes": true,
-    "app/components": true
-  });
-  
-  const activeFile = files.find(file => file.id === activeFileId);
-  
-  // Group files by folder
-  const fileTree = files.reduce((acc, file) => {
-    const parts = file.name.split('/');
-    let current = acc;
-    
-    for (let i = 0; i < parts.length - 1; i++) {
-      const part = parts[i];
-      if (!current[part]) {
-        current[part] = {};
-      }
-      current = current[part];
-    }
-    
-    const fileName = parts[parts.length - 1];
-    current[fileName] = file;
-    
-    return acc;
-  }, {});
-  
-  const toggleFolder = (path) => {
-    setExpandedFolders(prev => ({
-      ...prev,
-      [path]: !prev[path]
-    }));
-  };
-  
-  const renderFileTree = (tree, path = "") => {
-    return Object.entries(tree).map(([key, value]) => {
-      const currentPath = path ? `${path}/${key}` : key;
-      
-      // Check if it's a file or folder
-      if (value.id) {
-        // It's a file
-        return (
-          <div 
-            key={value.id}
-            className={`flex items-center gap-2 px-3 py-1.5 text-sm cursor-pointer ${
-              activeFileId === value.id ? 'bg-primary/20 text-primary' : 'hover:bg-surface'
-            }`}
-            onClick={() => setActiveFileId(value.id)}
-          >
-            <File className="w-4 h-4" />
-            <span className="truncate">{key}</span>
-          </div>
-        );
-      } else {
-        // It's a folder
-        const isExpanded = expandedFolders[currentPath];
-        
-        return (
-          <div key={currentPath}>
-            <div 
-              className="flex items-center gap-2 px-3 py-1.5 text-sm cursor-pointer hover:bg-surface"
-              onClick={() => toggleFolder(currentPath)}
-            >
-              {isExpanded ? (
-                <ChevronDown className="w-4 h-4" />
-              ) : (
-                <ChevronRight className="w-4 h-4" />
-              )}
-              <FolderTree className="w-4 h-4" />
-              <span>{key}</span>
-            </div>
-            
-            {isExpanded && (
-              <div className="pl-4">
-                {renderFileTree(value, currentPath)}
-              </div>
-            )}
-          </div>
-        );
-      }
-    });
-  };
-  
+export default function CodeEditor() {
+  const [code, setCode] = useState(`import React from 'react';
+
+function AnimeCard({ title, imageUrl, rating }) {
   return (
-    <div className="h-screen flex flex-col">
-      {/* Toolbar */}
-      <div className="bg-surface border-b border-border p-2 flex items-center justify-between">
-        <div className="flex items-center gap-2">
-          <button className="p-1.5 hover:bg-bg rounded-md transition-colors">
-            <Save className="w-4 h-4" />
+    <div className="bg-white rounded-lg shadow-md overflow-hidden">
+      <img src={imageUrl} alt={title} className="w-full h-48 object-cover" />
+      <div className="p-4">
+        <h3 className="font-bold text-lg">{title}</h3>
+        <div className="flex items-center mt-2">
+          <span className="text-yellow-500">★</span>
+          <span className="ml-1">{rating}/10</span>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+export default AnimeCard;`);
+
+  return (
+    <div className="p-6">
+      <div className="flex justify-between items-center mb-4">
+        <h1 className="text-2xl font-bold">Code Editor</h1>
+        <div className="flex space-x-2">
+          <button className="btn-secondary flex items-center">
+            <Play size={16} className="mr-1" /> Preview
           </button>
-          <button className="p-1.5 hover:bg-bg rounded-md transition-colors">
-            <Play className="w-4 h-4" />
+          <button className="btn-secondary flex items-center">
+            <Download size={16} className="mr-1" /> Export
           </button>
-          <button className="p-1.5 hover:bg-bg rounded-md transition-colors">
-            <Download className="w-4 h-4" />
-          </button>
-          <button className="p-1.5 hover:bg-bg rounded-md transition-colors">
-            <Share2 className="w-4 h-4" />
+          <button className="btn-primary flex items-center">
+            <Save size={16} className="mr-1" /> Save
           </button>
         </div>
-        <button className="p-1.5 hover:bg-bg rounded-md transition-colors">
-          <SettingsIcon className="w-4 h-4" />
-        </button>
       </div>
       
-      <div className="flex-1 flex overflow-hidden">
-        {/* File Explorer */}
-        <div className="w-64 bg-surface border-r border-border overflow-y-auto">
-          <div className="p-3 border-b border-border">
-            <h3 className="font-semibold">Files</h3>
-          </div>
-          <div className="py-2">
-            {renderFileTree(fileTree)}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div className="lg:col-span-2">
+          <div className="bg-gray-900 rounded-lg overflow-hidden">
+            <div className="bg-gray-800 text-gray-400 px-4 py-2 text-sm flex">
+              <span className="border-b-2 border-blue-500 text-white px-2 py-1">AnimeCard.jsx</span>
+              <span className="px-2 py-1">styles.css</span>
+            </div>
+            <textarea
+              value={code}
+              onChange={(e) => setCode(e.target.value)}
+              className="w-full bg-gray-900 text-gray-100 font-mono p-4 h-[500px] focus:outline-none"
+              spellCheck="false"
+            />
           </div>
         </div>
         
-        {/* Editor */}
-        <div className="flex-1 overflow-hidden flex flex-col">
-          {/* Tabs */}
-          <div className="bg-surface border-b border-border flex">
-            {activeFile && (
-              <div className="px-4 py-2 text-sm border-r border-border bg-bg">
-                {activeFile.name.split('/').pop()}
+        <div>
+          <div className="card h-full">
+            <h2 className="text-xl font-bold mb-4">Component Properties</h2>
+            
+            <div className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Title
+                </label>
+                <input 
+                  type="text" 
+                  className="input w-full" 
+                  defaultValue="My Hero Academia"
+                />
               </div>
-            )}
-          </div>
-          
-          {/* Code Area */}
-          <div className="flex-1 overflow-auto p-4 font-mono text-sm">
-            {activeFile ? (
-              <pre className="whitespace-pre-wrap">{activeFile.content}</pre>
-            ) : (
-              <div className="h-full flex items-center justify-center text-muted">
-                Select a file to edit
+              
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Image URL
+                </label>
+                <input 
+                  type="text" 
+                  className="input w-full" 
+                  defaultValue="https://example.com/anime.jpg"
+                />
               </div>
-            )}
+              
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Rating
+                </label>
+                <input 
+                  type="number" 
+                  min="0" 
+                  max="10" 
+                  step="0.1"
+                  className="input w-full" 
+                  defaultValue="8.5"
+                />
+              </div>
+              
+              <div className="pt-4 border-t">
+                <h3 className="font-medium mb-2">Documentation</h3>
+                <p className="text-sm text-gray-600 mb-2">
+                  The AnimeCard component displays information about an anime series or movie.
+                </p>
+                <ul className="text-sm text-gray-600 list-disc pl-5 space-y-1">
+                  <li><code className="bg-gray-100 px-1 rounded">title</code>: The name of the anime</li>
+                  <li><code className="bg-gray-100 px-1 rounded">imageUrl</code>: URL to the cover image</li>
+                  <li><code className="bg-gray-100 px-1 rounded">rating</code>: Numeric rating (0-10)</li>
+                </ul>
+              </div>
+            </div>
           </div>
         </div>
       </div>
     </div>
   );
-};
-
-export default CodeEditor;
+}
 
