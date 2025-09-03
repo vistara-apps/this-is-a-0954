@@ -1,7 +1,7 @@
 import { createCookieSessionStorage, redirect } from "@remix-run/node";
 
 // Configure session storage
-const sessionStorage = createCookieSessionStorage({
+export const sessionStorage = createCookieSessionStorage({
   cookie: {
     name: "__animeforge_session",
     httpOnly: true,
@@ -74,4 +74,3 @@ export async function logout(request) {
     },
   });
 }
-
